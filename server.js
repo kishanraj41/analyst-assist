@@ -13,10 +13,11 @@ const API_KEY = process.env.PERPLEXITY_API_KEY;
 const API_URL = 'https://api.perplexity.ai/chat/completions';
 const conversations = {};
 
+// Retry function for API calls
 const retry = async (fn, retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
-      console.log(`Attempt ${i + 1} of ${retries}`); // Temporary log
+      console.log(`Attempt ${i + 1} of ${retries}`); // Debug log
       return await fn();
     } catch (err) {
       if (i === retries - 1) throw err;
@@ -24,6 +25,8 @@ const retry = async (fn, retries = 3, delay = 1000) => {
     }
   }
 };
+
+// Endpoint for general data analysis questions
 app.post('/analyst-query', async (req, res) => {
   const { userId, question } = req.body;
   if (!question || !userId) {
@@ -34,17 +37,6 @@ app.post('/analyst-query', async (req, res) => {
     if (!conversations[userId]) conversations[userId] = [];
     conversations[userId].push({ role: 'user', content: question });
 
-    const retry = async (fn, retries = 3, delay = 1000) => {
-      for (let i = 0; i < retries; i++) {
-        try {
-          return await fn();
-        } catch (err) {
-          if (i === retries - 1) throw err;
-          await new Promise(resolve => setTimeout(resolve, delay));
-        }
-      }
-    };
-
     const response = await retry(() =>
       axios.post(
         API_URL,
@@ -53,7 +45,7 @@ app.post('/analyst-query', async (req, res) => {
           messages: [
             {
               role: 'system',
-              content: 'You are an expert data analysis assistant. Provide a concise, practical answer to the data analysis question, include citations from reputable sources (e.g., data science blogs, documentation), and explain the reasoning step-by-step. Focus on tools like SQL, Python, PySpark, or visualization platforms (e.g., Tableau, Power BI). Format the response as JSON with fields: answer, citations, reasoning.'
+              content: 'You are an expert data analysis assistant. Provide a concise, practical answer to the data analysis question, include citations from reputable sources (e.g., data science blogs, documentation), and explain the reasoning step-by-step. Focus on tools like SQL, Python, PySpark, or visualization platforms (e.g., Tableau, Power BI). Format the response as JSON with fields: answer (string), citations (array of strings), reasoning (array of strings).'
             },
             ...conversations[userId]
           ],
@@ -61,7 +53,7 @@ app.post('/analyst-query', async (req, res) => {
         },
         {
           headers: {
-            'Authorization': `Bearer ${API_KEY}`,
+            Authorization: `Bearer ${API_KEY}`,
             'Content-Type': 'application/json',
             'Accept': 'application/json'
           }
@@ -69,14 +61,13 @@ app.post('/analyst-query', async (req, res) => {
       )
     );
 
-    const content = response.data.choices[0].message.content;
     let parsedContent;
     try {
-      parsedContent = typeof content === 'string' ? JSON.parse(content) : content;
+      parsedContent = JSON.parse(response.data.choices[0].message.content);
     } catch (e) {
-      console.error('Parsing Error:', e.message, 'Raw Content:', content);
+      console.error('Parsing Error:', e.message, 'Raw Content:', response.data.choices[0].message.content);
       parsedContent = {
-        answer: content,
+        answer: response.data.choices[0].message.content,
         citations: [],
         reasoning: ['Unable to parse reasoning; raw response provided']
       };
@@ -92,100 +83,95 @@ app.post('/analyst-query', async (req, res) => {
     console.error('API Error:', {
       status: error.response?.status,
       data: error.response?.data,
-      message: error.message,
-      request: error.config
+      message: error.message
     });
     res.status(500).json({ error: 'Failed to process question' });
   }
 });
-const { parse } = require('csv-parse');
-const fs = require('fs');
 
-function cleanMarkdown(content) {
-  const approaches = [];
-  const citations = new Set();
-  let reasoning = [];
-
-  // Split sections more reliably
-  const approachSections = content.split(/\n(?=\*\*\d\.\s)/);
-
-  approachSections.forEach(section => {
-    const titleMatch = section.match(/\*\*(\d\.\s*.*?)\*\*/);
-    const title = titleMatch ? titleMatch[1].trim() : '';
-
-    const descriptionMatch = section.match(/-+\s*Approach:\s*([\s\S]*?)(?=\n-|\*\*|$)/i);
-    const description = descriptionMatch ? descriptionMatch[1].trim() : '';
-
-    const toolsMatch = section.match(/-+\s*Tools:\s*([\s\S]*?)(?=\n-|\*\*|$)/i);
-    const tools = toolsMatch 
-      ? toolsMatch[1].split(/,|\n/).map(t => t.trim()).filter(Boolean) 
-      : [];
-
-    const reasoningMatch = section.match(/-+\s*Reasoning:\s*([\s\S]*?)(?=\n-|\*\*|$)/i);
-    const sectionReasoning = reasoningMatch 
-      ? reasoningMatch[1].trim().split('\n').map(r => r.replace(/^-+\s*/, '').trim()).filter(Boolean) 
-      : [];
-
-    reasoning = reasoning.concat(sectionReasoning);
-
-    approaches.push({ title, description, tools });
-  });
-
-  // Extract citations like [1], [2]
-  const citationMatches = content.match(/\[(\d+)\]/g) || [];
-  citationMatches.forEach(citation => citations.add(citation));
-
-  return {
-    approaches,
-    citations: Array.from(citations),
-    reasoning
-  };
-}
-
-
+// Endpoint for sample data analysis
 app.post('/analyze-data', upload.single('file'), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'File is required' });
   const { userId } = req.body;
   if (!userId) return res.status(400).json({ error: 'userId is required' });
+
   try {
     const records = [];
-    fs.createReadStream(req.file.path)
-      .pipe(parse({ columns: true }))
+    const parser = fs.createReadStream(req.file.path).pipe(parse({ columns: true }));
+    
+    parser
       .on('data', (record) => records.push(record))
       .on('end', async () => {
-        if (!records.length) throw new Error('Empty or invalid CSV');
-        const schema = Object.keys(records[0]);
-        const prompt = `Given this sample data structure (columns: ${schema.join(', ')}), suggest three detailed data analysis approaches (e.g., statistical analysis, visualization, machine learning), recommend tools (e.g., SQL, Python, Tableau), include citations from reputable sources, and explain Reasoning step-by-step.`;
-        if (!conversations[userId]) conversations[userId] = [];
-        conversations[userId].push({ role: 'user', content: prompt });
-        const response = await retry(() => axios.post(
-          API_URL,
-          {
-            model: 'sonar-pro',
-            messages: [
-              { role: 'system', content: 'Provide detailed, practical data analysis recommendations.' },
-              ...conversations[userId]
-            ],
-            return_citations: true
-          },
-          {
-            headers: {
-              'Authorization': `Bearer ${API_KEY}`,
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            }
+        try {
+          if (!records.length) throw new Error('Empty or invalid CSV');
+          const schema = Object.keys(records[0]);
+          console.log('Parsed Schema:', schema); // Debug log
+
+          const prompt = `Given this sample data structure (columns: ${schema.join(', ')}), suggest three detailed data analysis approaches (e.g., statistical analysis, visualization, machine learning). For each approach, provide a title, a detailed description, recommended tools (e.g., SQL, Python, Tableau), and citations from reputable sources. Include a step-by-step reasoning explanation for all approaches. Return the response in JSON format with fields: approaches (array of {title: string, description: string, tools: array of strings}), citations (array of strings), reasoning (array of strings).`;
+
+          if (!conversations[userId]) conversations[userId] = [];
+          conversations[userId].push({ role: 'user', content: prompt });
+
+          const response = await retry(() =>
+            axios.post(
+              API_URL,
+              {
+                model: 'sonar-pro',
+                messages: [
+                  {
+                    role: 'system',
+                    content: 'Provide detailed, practical data analysis recommendations in JSON format.'
+                  },
+                  ...conversations[userId]
+                ],
+                return_citations: true
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${API_KEY}`,
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                }
+              }
+            )
+          );
+
+          let parsedContent;
+          try {
+            parsedContent = JSON.parse(response.data.choices[0].message.content);
+          } catch (e) {
+            console.error('Parsing Error:', e.message, 'Raw Content:', response.data.choices[0].message.content);
+            parsedContent = {
+              approaches: [],
+              citations: [],
+              reasoning: ['Unable to parse response; raw content logged']
+            };
           }
-        ));
-        const content = response.data.choices[0].message.content; // Extract content
-        const cleanedContent = cleanMarkdown(content);
-        conversations[userId].push({ role: 'assistant', content });
+
+          conversations[userId].push({ role: 'assistant', content: parsedContent });
+          res.json({
+            approaches: parsedContent.approaches || [],
+            citations: parsedContent.citations || [],
+            reasoning: parsedContent.reasoning || []
+          });
+        } catch (error) {
+          console.error('Processing Error:', error.message);
+          res.status(500).json({ error: 'Failed to analyze data' });
+        } finally {
+          fs.unlink(req.file.path, (err) => {
+            if (err) console.error('Failed to delete file:', err);
+          });
+        }
+      })
+      .on('error', (error) => {
+        console.error('CSV Parse Error:', error.message);
         fs.unlink(req.file.path, (err) => {
           if (err) console.error('Failed to delete file:', err);
         });
-        res.json(cleanedContent);
+        res.status(500).json({ error: 'Failed to parse CSV' });
       });
   } catch (error) {
-    console.error('Error:', error.response?.data || error.message);
+    console.error('Error:', error.message);
     res.status(500).json({ error: 'Failed to analyze data' });
   }
 });
