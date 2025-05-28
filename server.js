@@ -3,33 +3,41 @@ const axios = require('axios');
 const multer = require('multer');
 const fs = require('fs');
 const { parse } = require('csv-parse');
+const cors = require('cors');
+const path = require('path');
 require('dotenv').config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 const upload = multer({ dest: 'uploads/' });
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const API_KEY = process.env.PERPLEXITY_API_KEY;
 const API_URL = 'https://api.perplexity.ai/chat/completions';
 const conversations = {};
 
-// Retry function for API calls
 const retry = async (fn, retries = 3, delay = 1000) => {
   for (let i = 0; i < retries; i++) {
     try {
-      console.log(`Attempt ${i + 1} of ${retries}`); // Debug log
+      console.log(`Attempt ${i + 1} of ${retries}`);
       return await fn();
     } catch (err) {
+      console.error(`Retry ${i + 1} failed: ${err.message}`);
       if (i === retries - 1) throw err;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
 };
 
-// Endpoint for general data analysis questions
 app.post('/analyst-query', async (req, res) => {
   const { userId, question } = req.body;
   if (!question || !userId) {
+    console.error('Invalid request:', { userId, question });
     return res.status(400).json({ error: 'Question and userId are required' });
   }
 
@@ -45,7 +53,7 @@ app.post('/analyst-query', async (req, res) => {
           messages: [
             {
               role: 'system',
-              content: 'You are an expert data analysis assistant. Provide a concise, practical answer to the data analysis question, include citations from reputable sources (e.g., data science blogs, documentation), and explain the reasoning step-by-step. Focus on tools like SQL, Python, PySpark, or visualization platforms (e.g., Tableau, Power BI). Format the response as JSON with fields: answer (string), citations (array of strings), reasoning (array of strings).'
+              content: 'You are an expert data analysis assistant. Provide a concise, practical answer to the data analysis question, include citations from reputable sources (e.g., data science blogs, documentation), and explain reasoning step-by-step. Focus on tools like SQL, Python, PySpark, or visualization platforms (e.g., Tableau, Power BI). Format the response as JSON with fields: answer (string), reasoning (array of strings), citations (array of strings).'
             },
             ...conversations[userId]
           ],
@@ -63,9 +71,15 @@ app.post('/analyst-query', async (req, res) => {
 
     let parsedContent;
     try {
-      parsedContent = JSON.parse(response.data.choices[0].message.content);
+      // Strip markdown code blocks
+      let rawContent = response.data.choices[0].message.content;
+      rawContent = rawContent.replace(/^```json\s*|\s*```$/g, '').trim();
+      parsedContent = JSON.parse(rawContent);
     } catch (e) {
-      console.error('Parsing Error:', e.message, 'Raw Content:', response.data.choices[0].message.content);
+      console.error('Parsing error:', {
+        error: e.message,
+        rawContent: response.data.choices[0].message.content
+      });
       parsedContent = {
         answer: response.data.choices[0].message.content,
         citations: [],
@@ -80,20 +94,25 @@ app.post('/analyst-query', async (req, res) => {
       reasoning: parsedContent.reasoning || []
     });
   } catch (error) {
-    console.error('API Error:', {
+    console.error('API error:', {
       status: error.response?.status,
       data: error.response?.data,
       message: error.message
     });
-    res.status(500).json({ error: 'Failed to process question' });
+    res.status(500).json({ error: 'Failed to process query' });
   }
 });
 
-// Endpoint for sample data analysis
 app.post('/analyze-data', upload.single('file'), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: 'File is required' });
+  if (!req.file) {
+    console.error('No file uploaded');
+    return res.status(400).json({ error: 'File is required' });
+  }
   const { userId } = req.body;
-  if (!userId) return res.status(400).json({ error: 'userId is required' });
+  if (!userId) {
+    console.error('No userId provided');
+    return res.status(400).json({ error: 'userId is required' });
+  }
 
   try {
     const records = [];
@@ -103,12 +122,14 @@ app.post('/analyze-data', upload.single('file'), async (req, res) => {
       .on('data', (record) => records.push(record))
       .on('end', async () => {
         try {
-          if (!records.length) throw new Error('Empty or invalid CSV');
+          if (!records.length) {
+            console.error('Empty or invalid CSV');
+            throw new Error('Empty or invalid CSV');
+          }
           const schema = Object.keys(records[0]);
-          console.log('Parsed Schema:', schema); // Debug log
+          console.log('Parsed schema:', schema);
 
-          const prompt = `Given this sample data structure (columns: ${schema.join(', ')}), suggest three detailed data analysis approaches (e.g., statistical analysis, visualization, machine learning). For each approach, provide a title, a detailed description, recommended tools (e.g., SQL, Python, Tableau), and citations from reputable sources. Include a step-by-step reasoning explanation for all approaches. Return the response in JSON format with fields: approaches (array of {title: string, description: string, tools: array of strings}), citations (array of strings), reasoning (array of strings).`;
-
+          const prompt = `Given this sample data structure (columns: ${schema.join(', ')}), suggest three detailed data analysis approaches (e.g., statistical analysis, visualization, machine learning). For each approach, provide a title, a detailed description, recommended tools (e.g., SQL, Python, Tableau), and citations from reputable sources. Include a step-by-step reasoning explanation for all approaches. Return the response in JSON format with fields: approaches (array of {title: string, description: string, tools: array of strings}),reasoning (array of strings), citations (array of strings).`;
           if (!conversations[userId]) conversations[userId] = [];
           conversations[userId].push({ role: 'user', content: prompt });
 
@@ -138,13 +159,19 @@ app.post('/analyze-data', upload.single('file'), async (req, res) => {
 
           let parsedContent;
           try {
-            parsedContent = JSON.parse(response.data.choices[0].message.content);
+            // Strip markdown code blocks
+            let rawContent = response.data.choices[0].message.content;
+            rawContent = rawContent.replace(/^```json\s*|\s*```$/g, '').trim();
+            parsedContent = JSON.parse(rawContent);
           } catch (e) {
-            console.error('Parsing Error:', e.message, 'Raw Content:', response.data.choices[0].message.content);
+            console.error('Parsing error:', {
+              error: e.message,
+              rawContent: response.data.choices[0].message.content
+            });
             parsedContent = {
               approaches: [],
               citations: [],
-              reasoning: ['Unable to parse response; raw content logged']
+              reasoning: ['Unable to parse response; raw content: ' + response.data.choices[0].message.content]
             };
           }
 
@@ -155,7 +182,7 @@ app.post('/analyze-data', upload.single('file'), async (req, res) => {
             reasoning: parsedContent.reasoning || []
           });
         } catch (error) {
-          console.error('Processing Error:', error.message);
+          console.error('Processing error:', error.message);
           res.status(500).json({ error: 'Failed to analyze data' });
         } finally {
           fs.unlink(req.file.path, (err) => {
@@ -164,7 +191,7 @@ app.post('/analyze-data', upload.single('file'), async (req, res) => {
         }
       })
       .on('error', (error) => {
-        console.error('CSV Parse Error:', error.message);
+        console.error('CSV parse error:', error.message);
         fs.unlink(req.file.path, (err) => {
           if (err) console.error('Failed to delete file:', err);
         });
