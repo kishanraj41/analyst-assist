@@ -3,15 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AnalystAssist - Cyberpunk Dashboard</title>
-  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+  <title>Pocket Analyst - Cyberpunk Dashboard</title>
+  <script src="https://unpkg.com/react@18.2.0/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone@7.20.15/babel.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <script>
+    // Enforce single React instance
+    window.React = window.React || React;
+    window.ReactDOM = window.ReactDOM || ReactDOM;
+
     tailwind.config = {
       darkMode: 'class',
       theme: {
+        fontFamily: {
+          sans: ['Roboto', 'sans-serif'],
+          cyberpunk: ['"Orbitron"', 'sans-serif'],
+        },
         extend: {
           colors: {
             'cyberpunk-bg': '#0A0A23',
@@ -22,9 +32,6 @@
             'cyberpunk-accent': '#FFD700',
             'cyberpunk-light': '#E6E6FA',
           },
-          fontFamily: {
-            cyberpunk: ['"Orbitron"', 'sans-serif'],
-          },
           boxShadow: {
             'neon-glow': '0 0 10px #FF007A, 0 0 20px #00D4FF',
           },
@@ -32,12 +39,14 @@
       },
     };
   </script>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body className="bg-cyberpunk-bg dark:bg-cyberpunk-light-bg min-h-screen font-cyberpunk">
+<body class="bg-cyberpunk-bg dark:bg-cyberpunk-light-bg min-h-screen font-sans">
   <div id="root"></div>
-  <script type="text/babel" data-presets="react">
-    const { useState, useEffect, Component } = React;
+  <script type="text/babel" data-presets="react" data-type="module">
+    const { useState, useEffect, useRef, Component } = React;
+
+    console.log('React version:', React.version);
+    console.log('React instance:', React === window.React ? 'Single instance' : 'Multiple instances detected');
 
     class ErrorBoundary extends Component {
       state = { hasError: false, error: null };
@@ -66,7 +75,6 @@
       });
 
       useEffect(() => {
-        console.log('ThemeToggle: darkMode =', darkMode);
         if (darkMode) {
           document.documentElement.classList.add('dark');
           localStorage.setItem('theme', 'dark');
@@ -78,11 +86,8 @@
 
       return (
         <button
-          onClick={() => {
-            console.log('Toggling theme to', !darkMode ? 'dark' : 'light');
-            setDarkMode(!darkMode);
-          }}
-          className="p-2 rounded-full bg-cyberpunk-neon-purple text-cyberpunk-light hover:shadow-neon-glow transition"
+          onClick={() => setDarkMode(!darkMode)}
+          className="p-2 rounded-full bg-cyberpunk-neon-purple text-cyberpunk-light hover:shadow-neon-glow transition font-cyberpunk"
           title={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
         >
           {darkMode ? '🌞' : '🌌'}
@@ -92,20 +97,20 @@
 
     function Sidebar({ onQuerySelect, onUploadSelect }) {
       return (
-        <div className="w-64 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border-r border-cyberpunk-neon-cyan h-screen p-4">
-          <h1 className="text-2xl font-bold text-cyberpunk-neon-pink dark:text-cyberpunk-neon-pink mb-6">
-            AnalystAssist
+        <div className="w-64 sm:w-48 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border-r border-cyberpunk-neon-cyan h-screen p-4 sm:p-2">
+          <h1 className="text-2xl sm:text-xl font-bold text-cyberpunk-neon-pink mb-6 font-cyberpunk">
+            Pocket Analyst
           </h1>
           <nav>
             <button
               onClick={onQuerySelect}
-              className="w-full text-left p-2 mb-2 rounded text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan hover:bg-cyberpunk-neon-purple hover:text-cyberpunk-light dark:hover:text-cyberpunk-light transition"
+              className="w-full text-left p-2 sm:p-1 mb-2 rounded text-cyberpunk-neon-cyan hover:bg-cyberpunk-neon-purple hover:text-cyberpunk-light transition font-cyberpunk text-sm md:text-base"
             >
               🔍 Questions
             </button>
             <button
               onClick={onUploadSelect}
-              className="w-full text-left p-2 mb-2 rounded text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan hover:bg-cyberpunk-neon-purple hover:text-cyberpunk-light dark:hover:text-cyberpunk-light transition"
+              className="w-full text-left p-2 sm:p-1 mb-2 rounded text-cyberpunk-neon-cyan hover:bg-cyberpunk-neon-purple hover:text-cyberpunk-light transition font-cyberpunk text-sm md:text-base"
             >
               📤 Upload Data
             </button>
@@ -124,8 +129,8 @@
         }
       };
       return (
-        <div className="p-4 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-pink rounded-lg shadow-neon-glow">
-          <h2 className="text-lg font-semibold text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan mb-2">
+        <div className="p-4 sm:p-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-pink rounded-lg shadow-neon-glow">
+          <h2 className="text-lg sm:text-base font-semibold text-cyberpunk-neon-cyan mb-2">
             Ask
           </h2>
           <form onSubmit={handleSubmit}>
@@ -133,12 +138,12 @@
               type="text"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="E.g., How to optimize a SQL query?"
-              className="w-full p-2 border border-cyberpunk-neon-cyan rounded mb-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg text-cyberpunk-light dark:text-cyberpunk-light focus:outline-none focus:ring-2 focus:ring-cyberpunk-neon-pink"
+              placeholder="E.g., Best ways to predict Financial trends?"
+              className="w-full p-2 sm:p-1 border border-cyberpunk-neon-cyan rounded mb-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg text-cyberpunk-light focus:outline-none focus:ring-2 focus:ring-cyberpunk-neon-pink text-sm md:text-base"
             />
             <button
               type="submit"
-              className="w-full bg-cyberpunk-neon-purple text-cyberpunk-light dark:text-cyberpunk-light p-2 rounded hover:bg-opacity-80 hover:shadow-neon-glow transition"
+              className="w-full bg-cyberpunk-neon-purple text-cyberpunk-light p-2 sm:p-1 rounded hover:bg-opacity-80 hover:shadow-neon-glow transition font-cyberpunk text-sm md:text-base"
             >
               Execute
             </button>
@@ -158,8 +163,8 @@
         }
       };
       return (
-        <div className="p-4 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-pink rounded-lg shadow-neon-glow">
-          <h2 className="text-lg font-semibold text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan mb-2">
+        <div className="p-4 sm:p-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-pink rounded-lg shadow-neon-glow">
+          <h2 className="text-lg sm:text-base font-semibold text-cyberpunk-neon-cyan mb-2">
             Upload Data (CSV)
           </h2>
           <form onSubmit={handleSubmit}>
@@ -167,15 +172,57 @@
               type="file"
               accept=".csv"
               onChange={(e) => setFile(e.target.files[0])}
-              className="w-full p-2 border border-cyberpunk-neon-cyan rounded mb-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg text-cyberpunk-light dark:text-cyberpunk-light"
+              className="w-full p-2 sm:p-1 border border-cyberpunk-neon-cyan rounded mb-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg text-cyberpunk-light text-sm md:text-base"
             />
             <button
               type="submit"
-              className="w-full bg-cyberpunk-neon-purple text-cyberpunk-light dark:text-cyberpunk-light p-2 rounded hover:bg-opacity-80 hover:shadow-neon-glow transition"
+              className="w-full bg-cyberpunk-neon-purple text-cyberpunk-light p-2 sm:p-1 rounded hover:bg-opacity-80 hover:shadow-neon-glow transition font-cyberpunk text-sm md:text-base"
             >
-              How can we analyze this Data?
+              Analyze the Data?
             </button>
           </form>
+        </div>
+      );
+    }
+
+    function Chart({ config }) {
+      const canvasRef = useRef(null);
+      const [chartError, setChartError] = useState(null);
+
+      useEffect(() => {
+        console.log('Chart useEffect called, config:', config);
+        if (!canvasRef.current || !config || !window.Chart) {
+          console.log('Chart skipped: missing canvas, config, or Chart.js');
+          setChartError('Chart.js not loaded or invalid config');
+          return;
+        }
+
+        try {
+          const ctx = canvasRef.current.getContext('2d');
+          const chart = new window.Chart(ctx, config);
+          console.log('Chart initialized');
+          return () => {
+            console.log('Chart cleanup');
+            chart.destroy();
+          };
+        } catch (err) {
+          console.error('Chart initialization error:', err);
+          setChartError(err.message);
+        }
+      }, [config]);
+
+      if (chartError) {
+        return <div className="text-cyberpunk-neon-pink p-4 sm:p-2">Chart Error: {chartError}</div>;
+      }
+
+      if (!config) {
+        console.log('No chart config provided');
+        return null;
+      }
+
+      return (
+        <div className="mt-4">
+          <canvas ref={canvasRef} className="max-w-full h-80 sm:h-64"></canvas>
         </div>
       );
     }
@@ -186,91 +233,87 @@
       const handleFollowUpSubmit = (e) => {
         e.preventDefault();
         if (followUp.trim()) {
-          console.log('Submitting follow-up:', followUp);
           onFollowUp(followUp, true);
           setFollowUp('');
-        } else {
-          console.log('Follow-up empty, not submitting');
         }
       };
 
-      const handleInputChange = (e) => {
-        console.log('Follow-up input changed:', e.target.value);
-        setFollowUp(e.target.value);
-      };
-
-      if (loading) return <div className="text-center text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan p-4">Processing...</div>;
-      if (error) return <div className="text-cyberpunk-neon-pink dark:text-cyberpunk-neon-pink text-center p-4">{error}</div>;
+      if (loading) return <div className="text-center text-cyberpunk-neon-cyan p-4 sm:p-2">Processing...</div>;
+      if (error) return <div className="text-cyberpunk-neon-pink text-center p-4 sm:p-2">{error}</div>;
 
       return (
-        <div className="p-4 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-pink rounded-lg shadow-neon-glow">
+        <div className="p-4 sm:p-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-pink rounded-lg shadow-neon-glow">
           {!result ? (
-            <p className="text-center text-cyberpunk-light dark:text-cyberpunk-light">
-              Initiate a query or upload a CSV to begin analysis.
+            <p className="text-center text-cyberpunk-light font-sans text-sm md:text-base">
+              Initiate a question or upload a CSV to begin analysis.
             </p>
           ) : result.answer ? (
             <>
-              <h2 className="text-xl font-semibold text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan mb-2">Results:</h2>
-              <p className="text-cyberpunk-light dark:text-cyberpunk-light">{result.answer || 'No result provided'}</p>
+              <h2 className="text-xl sm:text-lg font-semibold text-cyberpunk-neon-cyan mb-2">Results:</h2>
+              {result.answer.map((line, index) => (
+                <p key={index} className="text-cyberpunk-light mb-2 font-sans text-sm md:text-base">
+                  {line.startsWith('-') ? '• ' + line.slice(1).trim() : line}
+                </p>
+              ))}
             </>
           ) : (
             <>
-              <h2 className="text-xl font-semibold text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan mb-2">Analysis Approaches:</h2>
-              {result.approaches?.length ? (
-                result.approaches.map((approach, index) => (
-                  <div key={index} className="mb-4 p-4 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-cyan rounded">
-                    <h3 className="text-lg font-semibold text-cyberpunk-neon-pink dark:text-cyberpunk-neon-pink">{approach.title || 'Untitled Approach'}</h3>
-                    <p className="mt-2 text-cyberpunk-light dark:text-cyberpunk-light">{approach.description || 'No description provided'}</p>
-                    <p className="mt-1 text-cyberpunk-light dark:text-cyberpunk-light">
-                      <strong>Tools:</strong>{' '}
-                      {approach.tools?.length ? approach.tools.join(', ') : 'None specified'}
-                    </p>
+              <h2 className="text-xl sm:text-lg font-semibold text-cyberpunk-neon-cyan mb-2">Insights:</h2>
+              {result.chartConfig && <Chart config={result.chartConfig} />}
+              {result.insights?.length ? (
+                result.insights.map((insight, index) => (
+                  <div key={index} className="mb-4 p-4 sm:p-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg border border-cyberpunk-neon-cyan rounded">
+                    <h3 className="text-lg sm:text-base font-semibold text-cyberpunk-neon-pink">{insight.title || 'Insight'}</h3>
+                    <p className="mt-2 text-cyberpunk-light whitespace-pre-line font-sans text-sm md:text-base">{insight.description || 'No description provided'}</p>
+                    {insight.tools && (
+                      <p className="mt-1 text-cyberpunk-light font-sans text-sm md:text-base">
+                        <strong>Tools:</strong> {insight.tools.join(', ') || 'None specified'}
+                      </p>
+                    )}
                   </div>
                 ))
               ) : (
-                <p className="text-cyberpunk-light dark:text-cyberpunk-light">No approaches available</p>
+                <p className="text-cyberpunk-light font-sans text-sm md:text-base">No insights available</p>
               )}
             </>
           )}
           {result && (
             <>
-              <h3 className="text-lg font-semibold text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan mt-4">Reasoning:</h3>
-              <ol className="list-decimal pl-5 mt-2 text-cyberpunk-light dark:text-cyberpunk-light">
+              <h3 className="text-lg sm:text-base font-semibold text-cyberpunk-neon-cyan mt-4">Reasoning:</h3>
+              <ol className="list-decimal pl-5 mt-2 text-cyberpunk-light text-sm md:text-base">
                 {result.reasoning?.length ? (
                   result.reasoning.map((step, index) => (
-                    <li key={index}>{step}</li>
+                    <li key={index} className="font-sans">{step}</li>
                   ))
                 ) : (
-                  <li>No reasoning provided</li>
+                  <li className="font-sans">No reasoning provided</li>
                 )}
               </ol>
-              <h3 className="text-lg font-semibold text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan mt-4">Data Sources:</h3>
-              <ul className="list-disc pl-5 mt-2 text-cyberpunk-light dark:text-cyberpunk-light">
+              <h3 className="text-lg sm:text-base font-semibold text-cyberpunk-neon-cyan mt-4">Data Sources:</h3>
+              <ul className="list-disc pl-5 mt-2 text-cyberpunk-light text-sm md:text-base">
                 {result.citations?.length ? (
                   result.citations.map((citation, index) => (
-                    <li key={index}>
-                      [{index + 1}] {typeof citation === 'string' ? citation : `Source ${citation}`}
+                    <li key={index} className="font-sans">
+                      [{citation.index}] <a href={citation.source} className="text-cyberpunk-neon-cyan hover:underline" target="_blank">{citation.source}</a>
                     </li>
                   ))
                 ) : (
-                  <li>No sources provided</li>
+                  <li className="font-sans">No external sources cited; analysis based on provided data or general knowledge</li>
                 )}
               </ul>
               <div className="mt-4">
-                <h3 className="text-lg font-semibold text-cyberpunk-neon-cyan dark:text-cyberpunk-neon-cyan">Follow-up Questions</h3>
+                <h3 className="text-lg sm:text-base font-semibold text-cyberpunk-neon-cyan">Follow-up Questions:</h3>
                 <form onSubmit={handleFollowUpSubmit} className="mt-2">
                   <input
                     type="text"
                     value={followUp}
-                    onChange={handleInputChange}
-                    placeholder="Ask a follow-up question..."
-                    className="w-full p-2 border border-cyberpunk-neon-cyan rounded mb-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg text-cyberpunk-light dark:text-cyberpunk-light focus:outline-none focus:ring-2 focus:ring-cyberpunk-neon-pink"
-                    autoFocus
-                    onFocus={() => console.log('Follow-up input focused')}
+                    onChange={(e) => setFollowUp(e.target.value)}
+                    placeholder="Type your follow-up question..."
+                    className="w-full p-2 sm:p-1 border border-cyberpunk-neon-cyan rounded-lg mb-2 bg-cyberpunk-bg dark:bg-cyberpunk-light-bg text-cyberpunk-light focus:outline-none focus:ring-2 focus:ring-cyberpunk-neon-pink text-sm md:text-base"
                   />
                   <button
                     type="submit"
-                    className="w-full bg-cyberpunk-neon-purple text-cyberpunk-light dark:text-cyberpunk-light p-2 rounded hover:bg-opacity-80 hover:shadow-neon-glow transition"
+                    className="w-full py-2 sm:py-1 bg-cyberpunk-neon-purple text-cyberpunk-light rounded hover:bg-opacity-80 hover:shadow-neon-glow transition font-cyberpunk text-sm md:text-base"
                   >
                     Submit Follow-Up
                   </button>
@@ -287,16 +330,10 @@
       const [loading, setLoading] = useState(false);
       const [error, setError] = useState(null);
       const [view, setView] = useState('query');
-      const userId = 'user-' + Math.random().toString(36).substr(2, 9);
-
-      useEffect(() => {
-        console.log('App mounted, userId:', userId);
-      }, []);
+      const userId = 'user-' + Math.random().toString(36).substr(2, 10);
 
       const handleSubmit = async (input, isFollowUp) => {
-        console.log('Submitting:', { input: typeof input === 'string' ? input : input.name, isFollowUp });
         setLoading(true);
-        setError(null);
         try {
           if (typeof input === 'string') {
             const response = await fetch('http://localhost:3000/analyst-query', {
@@ -304,10 +341,10 @@
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ userId, question: input })
             });
-            if (!response.ok) throw new Error(`Query failed: ${response.statusText}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
-            console.log('Query response:', data);
             setResult(data);
+            setError(null);
           } else {
             const formData = new FormData();
             formData.append('file', input);
@@ -316,13 +353,12 @@
               method: 'POST',
               body: formData
             });
-            if (!response.ok) throw new Error(`Data analysis failed: ${response.statusText}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const data = await response.json();
-            console.log('Data analysis response:', data);
             setResult(data);
+            setError(null);
           }
         } catch (err) {
-          console.error('Fetch error:', err);
           setError(err.message);
         } finally {
           setLoading(false);
@@ -334,15 +370,15 @@
           <div className="flex">
             <Sidebar
               onQuerySelect={() => setView('query')}
-              onUploadSelect={() => setView('upload')}
+              onUploadSelect={() => setView('analyze')}
             />
-            <div className="flex-1 p-6">
+            <div className="flex-1 p-4 sm:p-2">
               <div className="flex justify-end mb-4">
                 <ThemeToggle />
               </div>
-              <div className="max-w-4xl mx-auto">
+              <div className="max-w-4xl mx-auto sm:text-sm md:text-base sm:p-2 md:p-4">
                 {view === 'query' && <AnalystQueryInput onSubmit={handleSubmit} />}
-                {view === 'upload' && <DataUpload onSubmit={handleSubmit} />}
+                {view === 'analyze' && <DataUpload onSubmit={handleSubmit} />}
                 <ResultDisplay
                   result={result}
                   loading={loading}
@@ -356,20 +392,8 @@
       );
     }
 
-    try {
-      const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<App />);
-      console.log('React app rendered');
-    } catch (e) {
-      console.error('Rendering error:', e);
-      document.getElementById('root').innerHTML = `
-        <div style="color: #FF007A; text-align: center;">
-          <h2>System Failure</h2>
-          <p>${e.message}</p>
-          <p>Check console for details.</p>
-        </div>
-      `;
-    }
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
   </script>
 </body>
 </html>
