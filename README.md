@@ -1,8 +1,3 @@
-Here is the entire `README.md` content **fully formatted in Markdown** and ready for copy-paste into a `README.md` file:
-
----
-
-````markdown
 # ⚡ Pocket Analyst
 
 **Pocket Analyst** is a web-based data analysis platform that empowers users to explore datasets and query data analysis techniques. It offers interactive visualizations, actionable insights, and transparent citations as raw URLs.
