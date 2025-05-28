@@ -1,6 +1,11 @@
+Here is the entire `README.md` content **fully formatted in Markdown** and ready for copy-paste into a `README.md` file:
+
+---
+
+````markdown
 # ⚡ Pocket Analyst
 
-**Pocket Analyst** is a web-based data analysis platform that empowers users to explore e-commerce datasets and query data analysis techniques. With a sleek Cyberpunk-themed interface, it offers interactive visualizations, actionable insights, and transparent citations as raw URLs.
+**Pocket Analyst** is a web-based data analysis platform that empowers users to explore datasets and query data analysis techniques. It offers interactive visualizations, actionable insights, and transparent citations as raw URLs.
 
 Users can upload CSV files for analysis or ask questions about data techniques (e.g., SQL optimization), receiving detailed responses powered by the Perplexity Sonar API. Built with React, Express, and Chart.js, Pocket Analyst combines a mobile-responsive design with a neon aesthetic, featuring Orbitron and Roboto fonts and a dark/light mode toggle.
 
@@ -9,7 +14,6 @@ Users can upload CSV files for analysis or ask questions about data techniques (
 ## 📑 Table of Contents
 
 - [Features](#features)
-- [Screenshots](#screenshots)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
@@ -32,7 +36,7 @@ Users can upload CSV files for analysis or ask questions about data techniques (
 
 ## 🚀 Features
 
-- **CSV Data Analysis**: Upload e-commerce CSV files to generate insights, business recommendations, and future analysis methods via `/analyze-data`.
+- **CSV Data Analysis**: Upload CSV files to generate insights, business recommendations, and future analysis methods via `/analyze-data`.
 - **Interactive Visualizations**: Bar charts with neon colors (pink, cyan, purple) using Chart.js.
 - **Query Interface**: Ask data questions like “How to find duplicates in SQL?” via `/analyst-query`.
 - **Transparent Citations**: Raw clickable URLs like `https://www.atlassian.com/...`.
@@ -41,15 +45,6 @@ Users can upload CSV files for analysis or ask questions about data techniques (
 - **Future Analysis Tools**: Recommends tools like PySpark, Tableau, and methods like clustering.
 - **Scalable Backend**: Express server with Sonar API integration.
 - **Error Handling**: Graceful messages and console logging.
-
----
-
-## 🖼️ Screenshots
-
-> Save screenshots in the `docs/` folder:
-- `home.png` – Homepage UI
-- `chart.png` – CSV analysis
-- `citations.png` – Query output
 
 ---
 
@@ -70,119 +65,118 @@ Users can upload CSV files for analysis or ask questions about data techniques (
 git clone https://github.com/your-username/pocket-analyst.git
 cd pocket-analyst
 npm install express axios dotenv csv-parse multer cors
-Create a .env file:
+````
 
-env
-Copy
-Edit
+Create a `.env` file:
+
+```env
 PERPLEXITY_API_KEY=your_api_key_here
-▶️ Running Locally
-bash
-Copy
-Edit
+```
+
+---
+
+### ▶️ Running Locally
+
+```bash
 node server.js
-Then visit: http://localhost:3000
+```
 
-📂 Usage
-📤 Uploading CSV Data
-Navigate to Upload Data.
+Then visit: `http://localhost:3000`
 
-Upload a file (sample.csv):
+---
 
-Copy
-Edit
+## 📂 Usage
+
+### 📤 Uploading CSV Data
+
+1. Navigate to **Upload Data**.
+2. Upload a file (`sample.csv`):
+
+```
 order_id,user_id,product_id,order_date,category,product_name,price,quantity,revenue,...
 1,101,201,2025-01-01,Electronics,Laptop,1000,1,1000,...
 2,102,202,2025-01-02,Clothing,Shirt,50,2,100,...
-Click "How can we analyze this Data?"
+```
 
-Output
-Chart: Revenue by category (e.g., Electronics $3800)
+3. Click "How can we analyze this Data?"
 
-Insights: Trends like "Electronics = 86% revenue"
+#### Output
 
-Recommendations: Business strategies
+* **Chart**: Revenue by category (e.g., Electronics \$3800)
+* **Insights**: Trends like "Electronics = 86% revenue"
+* **Recommendations**: Business strategies
+* **Future Analysis**: Tools & methods
+* **Citations**: Raw URLs or “No external sources cited”
 
-Future Analysis: Tools & methods
+---
 
-Citations: Raw URLs or “No external sources cited”
+### ❓ Querying Data Techniques
 
-❓ Querying Data Techniques
-Navigate to Questions.
+1. Navigate to **Questions**.
+2. Enter a question: *"How to find duplicates in SQL?"*
+3. Click **Execute**
 
-Enter a question: "How to find duplicates in SQL?"
+#### Output
 
-Click Execute
+* **Results**: SQL example using `GROUP BY`
+* **Citations**: `[1] https://www.atlassian.com/...`
+* **Reasoning**: Explanation from Sonar
+* **Follow-up**: Optional additional input
 
-Output
-Results: SQL example using GROUP BY
+---
 
-Citations: [1] https://www.atlassian.com/...
+## 🧱 Technical Architecture
 
-Reasoning: Explanation from Sonar
+### 🖥️ Frontend
 
-Follow-up: Optional additional input
+* **Framework**: React (JSX via CDN)
+* **Styling**: Tailwind CSS with Cyberpunk theme:
 
-🧱 Technical Architecture
-🖥️ Frontend
-Framework: React (JSX via CDN)
+  * Neon Pink `#FF007A`
+  * Cyan `#00D4FF`
+  * Purple `#9D00FF`
+* **Fonts**:
 
-Styling: Tailwind CSS with Cyberpunk theme:
+  * Orbitron (titles/buttons)
+  * Roboto (text)
+* **Charts**: Chart.js v4
+* **Components**:
 
-Neon Pink #FF007A
+  * Sidebar, AnalystQueryInput, DataUpload, Chart, ResultDisplay, ThemeToggle
+* **Error Handling**: `ErrorBoundary`
 
-Cyan #00D4FF
+---
 
-Purple #9D00FF
+### 🧪 Backend
 
-Fonts:
+* **Framework**: Express.js
+* **File Handling**: Multer for CSVs, `csv-parse`
+* **Endpoints**:
 
-Orbitron (titles/buttons)
+  * `POST /analyst-query`
+  * `POST /analyze-data`
+* **Session**: `conversationHistories` Map
+* **CORS**: Enabled
+* **Errors**: Console logs and UI alerts
 
-Roboto (text)
+---
 
-Charts: Chart.js v4
+### 🔌 API Integration
 
-Components:
+* **Service**: Perplexity Sonar
 
-Sidebar, AnalystQueryInput, DataUpload, Chart, ResultDisplay, ThemeToggle
+  * Endpoint: `https://api.perplexity.ai/chat/completions`
+  * Model: `sonar-pro`
+  * Auth: Bearer Token via `.env`
+* **Citations**:
 
-Error Handling: ErrorBoundary
+  * Inline like `[1]` mapped to raw URLs
 
-🧪 Backend
-Framework: Express.js
+---
 
-File Handling: Multer for CSVs, csv-parse
+## 📁 File Structure
 
-Endpoints:
-
-POST /analyst-query
-
-POST /analyze-data
-
-Session: conversationHistories Map
-
-CORS: Enabled
-
-Errors: Console logs and UI alerts
-
-🔌 API Integration
-Service: Perplexity Sonar
-
-Endpoint: https://api.perplexity.ai/chat/completions
-
-Model: sonar-pro
-
-Auth: Bearer Token via .env
-
-Citations:
-
-Inline like [1] mapped to raw URLs
-
-📁 File Structure
-bash
-Copy
-Edit
+```
 pocket-analyst/
 ├── public/            # Static frontend
 ├── uploads/           # CSV uploads
@@ -193,23 +187,25 @@ pocket-analyst/
 ├── README.md
 ├── package.json
 └── node_modules/
-🛠️ Troubleshooting
-Server won't start: Check terminal logs and .env
+```
 
-No citations: Inspect /analyst-query response in browser dev tools
+---
 
-Chart not rendering: Ensure correct CSV structure
+## 🛠️ Troubleshooting
 
-Mobile issues: Use Chrome DevTools, inspect Tailwind sm: classes
+* **Server won't start**: Check terminal logs and `.env`
+* **No citations**: Inspect `/analyst-query` response in browser dev tools
+* **Chart not rendering**: Ensure correct CSV structure
+* **Mobile issues**: Use Chrome DevTools, inspect Tailwind `sm:` classes
+* **Ngrok fails**: Restart and verify port 3000 open
 
-Ngrok fails: Restart and verify port 3000 open
+---
 
-🤝 Contributing
+## 🤝 Contributing
+
 We welcome contributions!
 
-bash
-Copy
-Edit
+```bash
 # Fork + Clone
 git clone https://github.com/kishanraj41/pocket-analyst.git
 
@@ -219,35 +215,26 @@ git checkout -b feature/your-feature
 # Commit
 git commit -m "Add your-feature"
 git push origin feature/your-feature
-🧭 Roadmap
-✅ Short-Term
-Add pie/line charts
+```
 
-Validate uploaded CSVs
+---
 
-Improve accessibility
+## 🧭 Roadmap
 
-🛤️ Mid-Term
-Real-time data stream support
+### ✅ Short-Term
 
-Add authentication
+* Add pie/line charts
+* Validate uploaded CSVs
+* Improve accessibility
 
-New data APIs (e.g., BigQuery)
+### 🛤️ Mid-Term
 
-🚀 Long-Term
-Mobile apps with Ionic
+* Real-time data stream support
+* Add authentication
+* New data APIs (e.g., BigQuery)
 
-Offline support via Service Workers
+### 🚀 Long-Term
 
-CI/CD and unit testing
-
-🙏 Credits
-Thanks to:
-
-Perplexity AI
-
-Chart.js
-
-Tailwind CSS
-
-Google Fonts
+* Mobile apps with Ionic
+* Offline support via Service Workers
+* CI/CD and unit testing
