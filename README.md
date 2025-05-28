@@ -1,348 +1,253 @@
-Pocket Analyst
-Pocket Analyst is a web-based data analysis platform that empowers users to explore datasets and query data analysis techniques. It offers interactive visualizations, actionable insights, and transparent raw URL citations.
+# ⚡ Pocket Analyst
 
-Upload CSV files for analysis or ask technical questions (e.g., SQL optimization) — all powered by the Perplexity Sonar API. Built with React, Express, and Chart.js, Pocket Analyst delivers a mobile-responsive neon aesthetic with Orbitron and Roboto fonts, and dark/light mode toggle support.
+**Pocket Analyst** is a web-based data analysis platform that empowers users to explore e-commerce datasets and query data analysis techniques. With a sleek Cyberpunk-themed interface, it offers interactive visualizations, actionable insights, and transparent citations as raw URLs.
 
-Table of Contents
-Features
+Users can upload CSV files for analysis or ask questions about data techniques (e.g., SQL optimization), receiving detailed responses powered by the Perplexity Sonar API. Built with React, Express, and Chart.js, Pocket Analyst combines a mobile-responsive design with a neon aesthetic, featuring Orbitron and Roboto fonts and a dark/light mode toggle.
 
-Screenshots
+---
 
-Getting Started
+## 📑 Table of Contents
 
-Prerequisites
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Running Locally](#running-locally)
+- [Usage](#usage)
+  - [Uploading CSV Data](#uploading-csv-data)
+  - [Querying Data Techniques](#querying-data-techniques)
+- [Technical Architecture](#technical-architecture)
+  - [Frontend](#frontend)
+  - [Backend](#backend)
+  - [API Integration](#api-integration)
+- [File Structure](#file-structure)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Roadmap](#roadmap)
+- [Credits](#credits)
+- [License](#license)
 
-Installation
+---
 
-Running Locally
+## 🚀 Features
 
-Usage
+- **CSV Data Analysis**: Upload e-commerce CSV files to generate insights, business recommendations, and future analysis methods via `/analyze-data`.
+- **Interactive Visualizations**: Bar charts with neon colors (pink, cyan, purple) using Chart.js.
+- **Query Interface**: Ask data questions like “How to find duplicates in SQL?” via `/analyst-query`.
+- **Transparent Citations**: Raw clickable URLs like `https://www.atlassian.com/...`.
+- **Cyberpunk UI**: Neon-themed design using Orbitron and Roboto fonts with dark/light mode toggle.
+- **Mobile-Responsive Design**: Styled with Tailwind CSS.
+- **Future Analysis Tools**: Recommends tools like PySpark, Tableau, and methods like clustering.
+- **Scalable Backend**: Express server with Sonar API integration.
+- **Error Handling**: Graceful messages and console logging.
 
-Uploading CSV Data
+---
 
-Querying Data Techniques
+## 🖼️ Screenshots
 
-Generating Screenshots
+> Save screenshots in the `docs/` folder:
+- `home.png` – Homepage UI
+- `chart.png` – CSV analysis
+- `citations.png` – Query output
 
-Technical Architecture
+---
 
-Frontend
+## 🧰 Getting Started
 
-Backend
+### Prerequisites
 
-API Integration
+- Node.js v16+ [Download](https://nodejs.org/)
+- Perplexity Sonar API Key [Get it here](https://www.perplexity.ai/)
+- VS Code (Recommended)
+- Git & Browser (Chrome, Firefox, Edge)
 
-File Structure
+---
 
-Troubleshooting
+### 🛠️ Installation
 
-Contributing
-
-Roadmap
-
-Credits
-
-License
-
-Features
-CSV Data Analysis: Upload e-commerce CSVs to generate insights, recommendations, and next-step analysis via /analyze-data.
-
-Interactive Visualizations: Chart.js bar charts with neon Cyberpunk styling (pink, cyan, purple).
-
-Query Interface: Ask data-related questions like "How to find duplicates in SQL?" via /analyst-query, with detailed responses and citations.
-
-Transparent Citations: Raw URLs like https://www.atlassian.com/... shown as clickable references.
-
-Cyberpunk UI: Neon-themed layout with Orbitron for titles/buttons and Roboto for content.
-
-Responsive Design: Tailwind CSS ensures compatibility across devices.
-
-Future Analysis Tools: Recommends advanced tools (e.g., PySpark) and methods (e.g., k-means).
-
-Scalable Backend: Express.js server with Sonar API integration.
-
-Error Handling: Graceful error messages and server logs.
-
-Note: Screenshots are placeholders; generate them in /docs as described below.
-
-Getting Started
-Prerequisites
-Node.js: v16+ – Download
-
-npm: Comes with Node.js
-
-Perplexity Sonar API Key: Get it here
-
-VS Code: Recommended – Download
-
-Git: For cloning the repository – Download
-
-Browser: Chrome, Firefox, or Edge
-
-Installation
-Clone the Repository:
-
-bash
-Copy
-Edit
+```bash
 git clone https://github.com/your-username/pocket-analyst.git
 cd pocket-analyst
-Install Dependencies:
-
-bash
-Copy
-Edit
 npm install express axios dotenv csv-parse multer cors
-Configure Environment:
+Create a .env file:
 
-Create a .env file in the root:
-
-ini
+env
 Copy
 Edit
 PERPLEXITY_API_KEY=your_api_key_here
-Verify Structure:
-
-pgsql
-Copy
-Edit
-pocket-analyst/
-├── public/
-├── uploads/
-├── docs/
-├── .env
-├── server.js
-├── sample.csv
-├── README.md
-└── node_modules/
-Running Locally
-Start the Server:
-
+▶️ Running Locally
 bash
 Copy
 Edit
 node server.js
-Output: Server running on port 3000
+Then visit: http://localhost:3000
 
-Open the App:
-Visit http://localhost:3000 in your browser.
+📂 Usage
+📤 Uploading CSV Data
+Navigate to Upload Data.
 
-Usage
-Uploading CSV Data
-Navigate to Upload Data in the sidebar
+Upload a file (sample.csv):
 
-Upload a CSV (e.g., sample.csv)
-
+Copy
+Edit
+order_id,user_id,product_id,order_date,category,product_name,price,quantity,revenue,...
+1,101,201,2025-01-01,Electronics,Laptop,1000,1,1000,...
+2,102,202,2025-01-02,Clothing,Shirt,50,2,100,...
 Click "How can we analyze this Data?"
 
-Output:
+Output
+Chart: Revenue by category (e.g., Electronics $3800)
 
-Bar chart of revenue by category
+Insights: Trends like "Electronics = 86% revenue"
 
-Insights (e.g., “Electronics: 86% revenue”)
+Recommendations: Business strategies
 
-Strategy recommendations (e.g., “Target high-return customers”)
+Future Analysis: Tools & methods
 
-Future analysis suggestions (e.g., k-means clustering)
+Citations: Raw URLs or “No external sources cited”
 
-Citations (raw URLs)
+❓ Querying Data Techniques
+Navigate to Questions.
 
-Querying Data Techniques
-Navigate to Questions
-
-Input a question (e.g., "How to find duplicates in SQL?")
+Enter a question: "How to find duplicates in SQL?"
 
 Click Execute
 
-Output includes:
+Output
+Results: SQL example using GROUP BY
 
-Detailed response
+Citations: [1] https://www.atlassian.com/...
 
-Inline citations
+Reasoning: Explanation from Sonar
 
-Reasoning/explanation
+Follow-up: Optional additional input
 
-Follow-up prompt field
+🧱 Technical Architecture
+🖥️ Frontend
+Framework: React (JSX via CDN)
 
-Generating Screenshots
-Open the app (localhost:3000 or via Ngrok)
+Styling: Tailwind CSS with Cyberpunk theme:
 
-Capture:
+Neon Pink #FF007A
 
-Home page
+Cyan #00D4FF
 
-CSV chart view
-
-Analyst query results
-
-Save in /docs as:
-
-arduino
-Copy
-Edit
-docs/
-├── home.png
-├── chart.png
-└── citations.png
-Technical Architecture
-Frontend
-Framework: React v18.2.0 via CDN
-
-Styling: Tailwind CSS + custom Cyberpunk theme
-
-Neon pink #FF007A
-
-Neon cyan #00D4FF
-
-Neon purple #9D00FF
+Purple #9D00FF
 
 Fonts:
 
-Orbitron (titles, buttons)
+Orbitron (titles/buttons)
 
-Roboto (body text)
+Roboto (text)
 
-Charts: Chart.js v4.4.3
+Charts: Chart.js v4
 
 Components:
 
-Sidebar, DataUpload, AnalystQueryInput, Chart, ResultDisplay, ThemeToggle
+Sidebar, AnalystQueryInput, DataUpload, Chart, ResultDisplay, ThemeToggle
 
-Error Handling: React ErrorBoundary
+Error Handling: ErrorBoundary
 
-Backend
+🧪 Backend
 Framework: Express.js
 
-File Upload: Multer
-
-CSV Parsing: csv-parse
+File Handling: Multer for CSVs, csv-parse
 
 Endpoints:
 
-POST /analyze-data
-
 POST /analyst-query
 
-Session Handling: In-memory chat histories via Map
+POST /analyze-data
+
+Session: conversationHistories Map
 
 CORS: Enabled
 
-API Integration
-API: Perplexity Sonar API
+Errors: Console logs and UI alerts
+
+🔌 API Integration
+Service: Perplexity Sonar
 
 Endpoint: https://api.perplexity.ai/chat/completions
 
 Model: sonar-pro
 
-Response: Answers, citations, structured JSON
+Auth: Bearer Token via .env
 
-Auth: Bearer token (PERPLEXITY_API_KEY)
+Citations:
 
-Citation Mapping: Maps inline references ([1]) to raw URLs
+Inline like [1] mapped to raw URLs
 
-File Structure
+📁 File Structure
 bash
 Copy
 Edit
 pocket-analyst/
-├── public/                  # Static files (React app)
-├── uploads/                 # Temp CSV storage
-├── docs/                    # Screenshots, documentation
-│   ├── home.png
-│   ├── chart.png
-│   └── citations.png
-├── .env                     # API key
-├── server.js                # Express backend
-├── sample.csv               # Example dataset
-├── README.md                # This file
-├── package.json             # Project metadata
-└── node_modules/            # Dependencies
-Troubleshooting
-Server Not Starting:
+├── public/            # Static frontend
+├── uploads/           # CSV uploads
+├── docs/              # Screenshots
+├── .env               # API keys
+├── server.js          # Express backend
+├── sample.csv         # Demo file
+├── README.md
+├── package.json
+└── node_modules/
+🛠️ Troubleshooting
+Server won't start: Check terminal logs and .env
 
-Check .env and run npm install
+No citations: Inspect /analyst-query response in browser dev tools
 
-View logs from node server.js
+Chart not rendering: Ensure correct CSV structure
 
-No Citations:
+Mobile issues: Use Chrome DevTools, inspect Tailwind sm: classes
 
-Check console.log output in server.js
+Ngrok fails: Restart and verify port 3000 open
 
-Inspect /analyst-query response in browser dev tools
-
-Chart Not Rendering:
-
-Ensure CSV includes category, revenue
-
-Debug Chart component via console
-
-Mobile Issues:
-
-Use Chrome DevTools (e.g., iPhone SE view)
-
-Adjust Tailwind sm: classes
-
-Ngrok Errors:
-
-Restart both server and Ngrok
-
-Check port 3000 availability
-
-Contributing
+🤝 Contributing
 We welcome contributions!
 
-Fork:
-
 bash
 Copy
 Edit
+# Fork + Clone
 git clone https://github.com/kishanraj41/pocket-analyst.git
-Create a Branch:
 
-bash
-Copy
-Edit
+# Create branch
 git checkout -b feature/your-feature
-Make Changes:
 
-Follow coding style (ESLint + Prettier recommended)
-
-Add or update tests (in future updates)
-
-Commit and Push:
-
-bash
-Copy
-Edit
+# Commit
 git commit -m "Add your-feature"
 git push origin feature/your-feature
-Roadmap
-Short-Term
-Add pie and line charts
+🧭 Roadmap
+✅ Short-Term
+Add pie/line charts
 
-CSV validation
+Validate uploaded CSVs
 
-Improve accessibility (ARIA, keyboard)
+Improve accessibility
 
-Mid-Term
-Real-time streaming support
+🛤️ Mid-Term
+Real-time data stream support
 
-User authentication
+Add authentication
 
-Integrate external APIs
+New data APIs (e.g., BigQuery)
 
-Long-Term
-Android/iOS apps (Ionic)
+🚀 Long-Term
+Mobile apps with Ionic
 
-Offline support (service workers)
+Offline support via Service Workers
 
-Full test coverage & CI/CD pipeline
+CI/CD and unit testing
 
-Credits
+🙏 Credits
+Thanks to:
+
 Perplexity AI
 
-Tailwind CSS
-
 Chart.js
+
+Tailwind CSS
 
 Google Fonts
