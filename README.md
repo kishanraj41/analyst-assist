@@ -24,8 +24,6 @@ Users can upload CSV or Excel files for analysis or ask questions about data tec
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Roadmap](#roadmap)
-- [Credits](#credits)
-- [License](#license)
 
 ---
 
