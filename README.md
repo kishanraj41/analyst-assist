@@ -8,7 +8,7 @@ Users can upload CSV or Excel files for analysis or ask questions about data tec
 
 ## 📑 Table of Contents
 
-- [Features](#features)
+- [Features](##Features)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
