@@ -8,22 +8,22 @@ Users can upload CSV or Excel files for analysis or ask questions about data tec
 
 ## 📑 Table of Contents
 
-- [Features](##🚀Features)
-- [Getting Started](#getting-started)
+- [Features](#🚀-features)
+- [Getting Started](#🧰-getting-started)
   - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Running Locally](#running-locally)
-- [Usage](#usage)
-  - [Uploading CSV Data](#uploading-csv-data)
-  - [Querying Data Techniques](#querying-data-techniques)
-- [Technical Architecture](#technical-architecture)
-  - [Frontend](#frontend)
-  - [Backend](#backend)
-  - [API Integration](#api-integration)
-- [File Structure](#file-structure)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [Roadmap](#roadmap)
+  - [Installation](#🛠️-installation)
+  - [Running Locally](#▶️-running-locally)
+- [Usage](#📂-usage)
+  - [Uploading CSV Data](#📤-uploading-csv-data)
+  - [Querying Data Techniques](#❓-querying-data-techniques)
+- [Technical Architecture](#🧱-technical-architecture)
+  - [Frontend](#🖥️-frontend)
+  - [Backend](#🧪-backend)
+  - [API Integration](#🔌-api-integration)
+- [File Structure](#📁-file-structure)
+- [Troubleshooting](#🛠️-troubleshooting)
+- [Contributing](#🤝-contributing)
+- [Roadmap](#🧭-roadmap)
 
 ---
 
@@ -57,118 +57,97 @@ Users can upload CSV or Excel files for analysis or ask questions about data tec
 git clone https://github.com/your-username/pocket-analyst.git
 cd pocket-analyst
 npm install express axios dotenv csv-parse multer cors
-````
+Create a .env file:
 
-Create a `.env` file:
+env
 
-```env
+Collapse
+
+Wrap
+
+Copy
 PERPLEXITY_API_KEY=your_api_key_here
-```
+▶️ Running Locally
+bash
 
----
+Collapse
 
-### ▶️ Running Locally
+Wrap
 
-```bash
+Run
+
+Copy
 node server.js
-```
+Then visit: http://localhost:3000
 
-Then visit: `http://localhost:3000`
+📂 Usage
+📤 Uploading CSV Data
+Navigate to Upload Data.
+Upload a file (sample.csv):
+text
 
----
+Collapse
 
-## 📂 Usage
+Wrap
 
-### 📤 Uploading CSV Data
-
-1. Navigate to **Upload Data**.
-2. Upload a file (`sample.csv`):
-
-```
+Copy
 order_id,user_id,product_id,order_date,category,product_name,price,quantity,revenue,...
 1,101,201,2025-01-01,Electronics,Laptop,1000,1,1000,...
 2,102,202,2025-01-02,Clothing,Shirt,50,2,100,...
-```
+Click "How can we analyze this Data?"
+Output
+Chart: Revenue by category (e.g., Electronics $3800)
+Insights: Trends like "Electronics = 86% revenue"
+Recommendations: Business strategies
+Future Analysis: Tools & methods
+Citations: Raw URLs or “No external sources cited”
+❓ Querying Data Techniques
+Navigate to Questions.
+Enter a question: "How to find duplicates in SQL?"
+Click Execute
+Output
+Results: SQL example using GROUP BY
+Citations: [1] https://www.atlassian.com/...
+Reasoning: Explanation from Sonar
+Follow-up: Optional additional input
+🧱 Technical Architecture
+🖥️ Frontend
+Framework: React (JSX via CDN)
+Styling: Tailwind CSS with Cyberpunk theme:
+Neon Pink #FF007A
+Cyan #00D4FF
+Purple #9D00FF
+Fonts:
+Orbitron (titles/buttons)
+Roboto (text)
+Charts: Chart.js v4
+Components:
+Sidebar, AnalystQueryInput, DataUpload, Chart, ResultDisplay, ThemeToggle
+Error Handling: ErrorBoundary
+🧪 Backend
+Framework: Express.js
+File Handling: Multer for CSVs, csv-parse
+Endpoints:
+POST /analyst-query
+POST /analyze-data
+Session: conversationHistories Map
+CORS: Enabled
+Errors: Console logs and UI alerts
+🔌 API Integration
+Service: Perplexity Sonar
+Endpoint: https://api.perplexity.ai/chat/completions
+Model: sonar-pro
+Auth: Bearer Token via .env
+Citations:
+Inline like [1] mapped to raw URLs
+📁 File Structure
+text
 
-3. Click "How can we analyze this Data?"
+Collapse
 
-#### Output
+Wrap
 
-* **Chart**: Revenue by category (e.g., Electronics \$3800)
-* **Insights**: Trends like "Electronics = 86% revenue"
-* **Recommendations**: Business strategies
-* **Future Analysis**: Tools & methods
-* **Citations**: Raw URLs or “No external sources cited”
-
----
-
-### ❓ Querying Data Techniques
-
-1. Navigate to **Questions**.
-2. Enter a question: *"How to find duplicates in SQL?"*
-3. Click **Execute**
-
-#### Output
-
-* **Results**: SQL example using `GROUP BY`
-* **Citations**: `[1] https://www.atlassian.com/...`
-* **Reasoning**: Explanation from Sonar
-* **Follow-up**: Optional additional input
-
----
-
-## 🧱 Technical Architecture
-
-### 🖥️ Frontend
-
-* **Framework**: React (JSX via CDN)
-* **Styling**: Tailwind CSS with Cyberpunk theme:
-
-  * Neon Pink `#FF007A`
-  * Cyan `#00D4FF`
-  * Purple `#9D00FF`
-* **Fonts**:
-
-  * Orbitron (titles/buttons)
-  * Roboto (text)
-* **Charts**: Chart.js v4
-* **Components**:
-
-  * Sidebar, AnalystQueryInput, DataUpload, Chart, ResultDisplay, ThemeToggle
-* **Error Handling**: `ErrorBoundary`
-
----
-
-### 🧪 Backend
-
-* **Framework**: Express.js
-* **File Handling**: Multer for CSVs, `csv-parse`
-* **Endpoints**:
-
-  * `POST /analyst-query`
-  * `POST /analyze-data`
-* **Session**: `conversationHistories` Map
-* **CORS**: Enabled
-* **Errors**: Console logs and UI alerts
-
----
-
-### 🔌 API Integration
-
-* **Service**: Perplexity Sonar
-
-  * Endpoint: `https://api.perplexity.ai/chat/completions`
-  * Model: `sonar-pro`
-  * Auth: Bearer Token via `.env`
-* **Citations**:
-
-  * Inline like `[1]` mapped to raw URLs
-
----
-
-## 📁 File Structure
-
-```
+Copy
 pocket-analyst/
 ├── public/            # Static frontend
 ├── uploads/           # CSV uploads
@@ -179,23 +158,23 @@ pocket-analyst/
 ├── README.md
 ├── package.json
 └── node_modules/
-```
-
----
-
-## 🛠️ Troubleshooting
-
-* **Server won't start**: Check terminal logs and `.env`
-* **No citations**: Inspect `/analyst-query` response in browser dev tools
-* **Chart not rendering**: Ensure correct CSV structure
-* **Mobile issues**: Use Chrome DevTools, inspect Tailwind `sm:` classes
----
-
-## 🤝 Contributing
-
+🛠️ Troubleshooting
+Server won't start: Check terminal logs and .env
+No citations: Inspect /analyst-query response in browser dev tools
+Chart not rendering: Ensure correct CSV structure
+Mobile issues: Use Chrome DevTools, inspect Tailwind sm: classes
+🤝 Contributing
 We welcome contributions!
 
-```bash
+bash
+
+Collapse
+
+Wrap
+
+Run
+
+Copy
 # Fork + Clone
 git clone https://github.com/kishanraj41/pocket-analyst.git
 
@@ -205,27 +184,17 @@ git checkout -b feature/your-feature
 # Commit
 git commit -m "Add your-feature"
 git push origin feature/your-feature
-```
-
----
-
-## 🧭 Roadmap
-
-### ✅ Short-Term
-
-* Add More Visualizations based on Data
-* Validate uploaded CSVs and Excel Files
-* Improve accessibility
-* Live Q/A regarding uploaded data
-* Browser Extension
-
-### 🛤️ Mid-Term
-
-* Real-time data stream support
-* New API Integration for Deeper analysis
-
-### 🚀 Long-Term
-
-* Mobile and Desktop app
-* Storage for Personalization
-* CI/CD and unit testing
+🧭 Roadmap
+✅ Short-Term
+Add More Visualizations based on Data
+Validate uploaded CSVs and Excel Files
+Improve accessibility
+Live Q/A regarding uploaded data
+Browser Extension
+🛤️ Mid-Term
+Real-time data stream support
+New API Integration for Deeper analysis
+🚀 Long-Term
+Mobile and Desktop app
+Storage for Personalization
+CI/CD and unit testing
