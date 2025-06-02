@@ -2,7 +2,7 @@
 
 **Pocket Analyst** is a web-based data analysis platform that empowers users to explore datasets and query data analysis techniques. It offers interactive visualizations, actionable insights, and transparent citations as raw URLs.
 
-Users can upload CSV files for analysis or ask questions about data techniques (e.g., SQL optimization), receiving detailed responses powered by the Perplexity Sonar API. Built with React, Express, and Chart.js, Pocket Analyst combines a mobile-responsive design with a neon aesthetic, featuring Orbitron and Roboto fonts and a dark/light mode toggle.
+Users can upload CSV or Excel files for analysis or ask questions about data techniques, receiving detailed responses powered by the Perplexity Sonar API. Built with React, Express, and Chart.js, Pocket Analyst combines a mobile-responsive design with a neon aesthetic, featuring Orbitron and Roboto fonts and a dark/light mode toggle.
 
 ---
 
@@ -32,10 +32,9 @@ Users can upload CSV files for analysis or ask questions about data techniques (
 ## 🚀 Features
 
 - **CSV Data Analysis**: Upload CSV files to generate insights, business recommendations, and future analysis methods via `/analyze-data`.
-- **Interactive Visualizations**: Bar charts with neon colors (pink, cyan, purple) using Chart.js.
+- **Interactive Visualizations**: Bar charts using Chart.js.
 - **Query Interface**: Ask data questions like “How to find duplicates in SQL?” via `/analyst-query`.
 - **Transparent Citations**: Raw clickable URLs like `https://www.atlassian.com/...`.
-- **Cyberpunk UI**: Neon-themed design using Orbitron and Roboto fonts with dark/light mode toggle.
 - **Mobile-Responsive Design**: Styled with Tailwind CSS.
 - **Future Analysis Tools**: Recommends tools like PySpark, Tableau, and methods like clustering.
 - **Scalable Backend**: Express server with Sonar API integration.
@@ -192,8 +191,6 @@ pocket-analyst/
 * **No citations**: Inspect `/analyst-query` response in browser dev tools
 * **Chart not rendering**: Ensure correct CSV structure
 * **Mobile issues**: Use Chrome DevTools, inspect Tailwind `sm:` classes
-* **Ngrok fails**: Restart and verify port 3000 open
-
 ---
 
 ## 🤝 Contributing
@@ -218,18 +215,19 @@ git push origin feature/your-feature
 
 ### ✅ Short-Term
 
-* Add pie/line charts
-* Validate uploaded CSVs
+* Add More Visualizations based on Data
+* Validate uploaded CSVs and Excel Files
 * Improve accessibility
+* Live Q/A regarding uploaded data
+* Browser Extension
 
 ### 🛤️ Mid-Term
 
 * Real-time data stream support
-* Add authentication
-* New data APIs (e.g., BigQuery)
+* New API Integration for Deeper analysis
 
 ### 🚀 Long-Term
 
-* Mobile apps with Ionic
-* Offline support via Service Workers
+* Mobile and Desktop app
+* Storage for Personalization
 * CI/CD and unit testing
