@@ -44,12 +44,12 @@ Users can upload CSV or Excel files for analysis or ask questions about data tec
 
 ## Screenshots
 
+- Data Analysis
 <img width="1199" alt="image" src="https://github.com/user-attachments/assets/3692fae5-7ef1-43b2-9cd8-1175bed562dd" />
 <img width="1180" alt="image" src="https://github.com/user-attachments/assets/d03d11f0-af84-44cf-9ed2-7198ec26fb92" />
-- Data Analysis
-  
-<img width="1187" alt="image" src="https://github.com/user-attachments/assets/4bd31cec-8a32-4c3e-8cf4-ea95bb304903" />
+
 - Data Queries
+<img width="1187" alt="image" src="https://github.com/user-attachments/assets/4bd31cec-8a32-4c3e-8cf4-ea95bb304903" />
 
 ---
 
